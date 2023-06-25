@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-
 import 'package:fakestore/models/product_model.dart';
 
 class ProductRepository {

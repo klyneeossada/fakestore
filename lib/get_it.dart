@@ -9,5 +9,9 @@ final getIt = GetIt.instance;
 void setup() {
   getIt.registerSingleton<ProductRepository>(ProductRepository());
   getIt.registerSingleton<CartController>(CartController());
-  getIt.registerSingleton<ProductController>(ProductController());
+  getIt.registerSingleton<ProductController>(
+    ProductController(
+        cartController: getIt<CartController>(),
+        repository: getIt<ProductRepository>()),
+  );
 }

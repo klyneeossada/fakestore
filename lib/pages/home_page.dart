@@ -3,6 +3,7 @@ import 'package:fakestore/controller/cart_controller.dart';
 import 'package:fakestore/controller/product_controller.dart';
 import 'package:flutter/material.dart';
 
+import '../get_it.dart';
 import '../models/product_model.dart';
 
 class HomePage extends StatefulWidget {
@@ -13,8 +14,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final controller = ProductController();
-  final cartController = CartController();
+  final controller = getIt<ProductController>();
+  final cartController = getIt<CartController>();
 
   @override
   void initState() {
@@ -25,6 +26,42 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: Drawer(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              height: 100,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Colors.blue,
+                border: Border.all(color: Colors.black),
+              ),
+              child: const Center(
+                child: DrawerHeader(
+                  decoration: BoxDecoration(color: Colors.blue),
+                  child: Text(
+                    'Menu',
+                    style: TextStyle(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextButton(
+                child: const Text('Login'),
+                onPressed: () {
+                  Navigator.popAndPushNamed(context, 'login-page');
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
       appBar: AppBar(
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -36,7 +73,9 @@ class _HomePageState extends State<HomePage> {
                   Text(cartController.cartItems.value.length.toString()),
               child: IconButton(
                 icon: const Icon(Icons.shopping_cart),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.popAndPushNamed(context, '/cart-page');
+                },
               ),
             ),
           ],
