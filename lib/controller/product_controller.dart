@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dio/dio.dart';
 import 'package:fakestore/controller/cart_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -12,15 +13,31 @@ class ProductController extends Disposable {
   final cartController = CartController();
 
   ProductController({
-    required repository,
-    required cartController,
+    repository,
+    cartController,
   });
+
+  final _dio = Dio();
 
   ValueNotifier<List<ProductModel>> products =
       ValueNotifier<List<ProductModel>>([]);
 
   getProducts() async {
     products.value = await repository.getProducts();
+  }
+
+  addProduct(String title, String price, String description, String image,
+      String category) async {
+    await _dio.post(
+      'https://fakestoreapi.com/products',
+      data: {
+        'title': title,
+        'price': double.tryParse(price),
+        'description': description,
+        'image': image,
+        'category': category
+      },
+    );
   }
 
   @override

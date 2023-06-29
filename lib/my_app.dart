@@ -1,6 +1,7 @@
 import 'package:fakestore/pages/cart_page.dart';
 import 'package:fakestore/pages/home_page.dart';
 import 'package:fakestore/pages/login_page.dart';
+import 'package:fakestore/pages/newproduct_page.dart';
 import 'package:flutter/material.dart';
 
 class MyApp extends StatelessWidget {
@@ -13,7 +14,8 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const HomePage(),
         '/cart-page': (context) => const CartPage(),
-        'login-page': (context) => const LoginPage()
+        'login-page': (context) => const LoginPage(),
+        'addproduct-page': (context) => NewProductPage()
       },
     );
   }

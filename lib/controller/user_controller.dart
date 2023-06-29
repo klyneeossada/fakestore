@@ -6,8 +6,7 @@ import 'package:get_it/get_it.dart';
 class UserController extends Disposable {
   Future<void> login(String login, String password) async {
     final userRepository = UserRepository();
-    final token = await userRepository.login(login, password);
-    print(token);
+    await userRepository.login(login, password);
   }
 
   @override
