@@ -18,15 +18,9 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Row(
+        title: const Row(
           children: [
-            IconButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/');
-              },
-              icon: const Icon(Icons.arrow_back),
-            ),
-            const Text('Login'),
+            Text('Login'),
           ],
         ),
       ),

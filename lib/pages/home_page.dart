@@ -106,16 +106,25 @@ class _HomePageState extends State<HomePage> {
                           Expanded(
                             child: InkWell(
                               onTap: () {
-                                setState(() {
-                                  cartController.cartItems.value.add(product);
-                                });
+                                Navigator.pushNamed(
+                                    context, 'product-detail-page', arguments: product);
                               },
                               child: Image.network(
                                 product.image,
-                                fit: BoxFit.contain,
+                                fit: BoxFit.cover,
                               ),
                             ),
                           ),
+                          IconButton(
+                            onPressed: () {
+                              setState(
+                                () {
+                                  cartController.cartItems.value.add(product);
+                                },
+                              );
+                            },
+                            icon: const Icon(Icons.add),
+                          )
                         ],
                       ),
                     );

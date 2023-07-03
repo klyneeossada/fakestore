@@ -13,50 +13,63 @@ class NewProductPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Adicionar Produto'),
-      ),
-      body: Column(
-        children: [
-          Form(
-            child: Column(
-              children: [
-                TextFormField(
-                  controller: _titleTextController,
-                  decoration: const InputDecoration(labelText: 'Title'),
-                ),
-                TextFormField(
-                  controller: _priceTextController,
-                  decoration: const InputDecoration(labelText: 'Price'),
-                ),
-                TextFormField(
-                  controller: _descriptionTextController,
-                  decoration: const InputDecoration(labelText: 'Description'),
-                ),
-                TextFormField(
-                  controller: _imageTextController,
-                  decoration: const InputDecoration(labelText: 'Image'),
-                ),
-                TextFormField(
-                  controller: _categoryTextController,
-                  decoration: const InputDecoration(labelText: 'Category'),
-                ),
-              ],
-            ),
+    return ScaffoldMessenger(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Row(
+            children: [
+              Text('Adicionar produto'),
+            ],
           ),
-          TextButton(
-            onPressed: () async {
-              await productController.addProduct(
-                  _titleTextController.text,
-                  _priceTextController.text,
-                  _descriptionTextController.text,
-                  _imageTextController.text,
-                  _categoryTextController.text);
-            },
-            child: const Text('Adicionar'),
-          )
-        ],
+        ),
+        body: Column(
+          children: [
+            Form(
+              child: Column(
+                children: [
+                  TextFormField(
+                    controller: _titleTextController,
+                    decoration: const InputDecoration(labelText: 'Title'),
+                  ),
+                  TextFormField(
+                    controller: _priceTextController,
+                    decoration: const InputDecoration(labelText: 'Price'),
+                  ),
+                  TextFormField(
+                    controller: _descriptionTextController,
+                    decoration: const InputDecoration(labelText: 'Description'),
+                  ),
+                  TextFormField(
+                    controller: _imageTextController,
+                    decoration: const InputDecoration(labelText: 'Image'),
+                  ),
+                  TextFormField(
+                    controller: _categoryTextController,
+                    decoration: const InputDecoration(labelText: 'Category'),
+                  ),
+                ],
+              ),
+            ),
+            TextButton(
+              onPressed: () async {
+                final statusCode = await productController.addProduct(
+                    _titleTextController.text,
+                    _priceTextController.text,
+                    _descriptionTextController.text,
+                    _imageTextController.text,
+                    _categoryTextController.text);
+
+                if (statusCode == 200) {
+                  const SnackBar(
+                    content: Text('Produto Adicionado com sucesso!'),
+                    duration: Duration(seconds: 2),
+                  );
+                }
+              },
+              child: const Text('Adicionar'),
+            ),
+          ],
+        ),
       ),
     );
   }

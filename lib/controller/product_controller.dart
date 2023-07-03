@@ -26,9 +26,9 @@ class ProductController extends Disposable {
     products.value = await repository.getProducts();
   }
 
-  addProduct(String title, String price, String description, String image,
+  Future<int?> addProduct(String title, String price, String description, String image,
       String category) async {
-    await _dio.post(
+    final response = await _dio.post(
       'https://fakestoreapi.com/products',
       data: {
         'title': title,
@@ -38,6 +38,8 @@ class ProductController extends Disposable {
         'category': category
       },
     );
+    int? statusCode = response.statusCode;
+    return statusCode;
   }
 
   @override
