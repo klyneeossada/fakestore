@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../get_it.dart';
 import '../models/product_model.dart';
+import '../widgets/drawer.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -26,42 +27,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: Drawer(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              height: 100,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.blue,
-                border: Border.all(color: Colors.black),
-              ),
-              child: const Center(
-                child: DrawerHeader(
-                  decoration: BoxDecoration(color: Colors.blue),
-                  child: Text(
-                    'Menu',
-                    style: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextButton(
-                child: const Text('Login'),
-                onPressed: () {
-                  Navigator.popAndPushNamed(context, 'login-page');
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
+      drawer: const HomeDrawer(),
       appBar: AppBar(
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -83,6 +49,27 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Column(
         children: [
+          Row(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(),
+                ),
+                height: 50,
+                width: 500,
+                child: const SizedBox(
+                  child: Row(children: [
+                    Text('Filtro'),
+                    SizedBox(width: 5),
+                    SizedBox(
+                      width: 50,
+                      child: TextField(),
+                    )
+                  ]),
+                ),
+              ),
+            ],
+          ),
           Expanded(
             child: ValueListenableBuilder<List<ProductModel>>(
               valueListenable: controller.products,
@@ -107,7 +94,8 @@ class _HomePageState extends State<HomePage> {
                             child: InkWell(
                               onTap: () {
                                 Navigator.pushNamed(
-                                    context, 'product-detail-page', arguments: product);
+                                    context, 'product-detail-page',
+                                    arguments: product);
                               },
                               child: Image.network(
                                 product.image,

@@ -1,4 +1,5 @@
 import 'package:fakestore/pages/cart_page.dart';
+import 'package:fakestore/pages/editproduct_page.dart';
 import 'package:fakestore/pages/home_page.dart';
 import 'package:fakestore/pages/login_page.dart';
 import 'package:fakestore/pages/newproduct_page.dart';
@@ -17,7 +18,8 @@ class MyApp extends StatelessWidget {
         '/cart-page': (context) => const CartPage(),
         'login-page': (context) => const LoginPage(),
         'addproduct-page': (context) => NewProductPage(),
-        'product-detail-page': (context) => const ProductDetailPage()
+        'product-detail-page': (context) => const ProductDetailPage(),
+        'edit-product-page': (context) => const EditProductPage()
       },
     );
   }

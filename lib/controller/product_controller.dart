@@ -26,10 +26,45 @@ class ProductController extends Disposable {
     products.value = await repository.getProducts();
   }
 
-  Future<int?> addProduct(String title, String price, String description, String image,
-      String category) async {
+  Future<int?> addProduct(String title, String price, String description,
+      String image, String category) async {
     final response = await _dio.post(
       'https://fakestoreapi.com/products',
+      data: {
+        'title': title,
+        'price': double.tryParse(price),
+        'description': description,
+        'image': image,
+        'category': category
+      },
+    );
+    int? statusCode = response.statusCode;
+    return statusCode;
+  }
+
+  Future<int?> updateProduct(int id, String title, String price,
+      String description, String image, String category) async {
+    final url = 'https://fakestoreapi.com/products/$id';
+    final response = await _dio.patch(
+      url,
+      data: {
+        'title': title,
+        'price': double.tryParse(price),
+        'description': description,
+        'image': image,
+        'category': category
+      },
+    );
+    int? statusCode = response.statusCode;
+
+    return statusCode;
+  }
+
+  Future<int?> deleteProduct(int id, String title, String price,
+      String description, String image, String category) async {
+    final url = 'https://fakestoreapi.com/products/$id';
+    final response = await _dio.delete(
+      url,
       data: {
         'title': title,
         'price': double.tryParse(price),

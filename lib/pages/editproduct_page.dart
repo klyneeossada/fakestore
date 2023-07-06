@@ -1,20 +1,25 @@
-import 'package:fakestore/controller/product_controller.dart';
 import 'package:flutter/material.dart';
 
+import '../controller/product_controller.dart';
+import '../models/product_model.dart';
 import '../widgets/drawer.dart';
 
-class NewProductPage extends StatelessWidget {
-  NewProductPage({super.key});
-
-  final _titleTextController = TextEditingController();
-  final _priceTextController = TextEditingController();
-  final _descriptionTextController = TextEditingController();
-  final _imageTextController = TextEditingController();
-  final _categoryTextController = TextEditingController();
-  final productController = ProductController();
+class EditProductPage extends StatelessWidget {
+  const EditProductPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final product = ModalRoute.of(context)?.settings.arguments as ProductModel;
+    final productController = ProductController();
+    final titleTextController = TextEditingController(text: product.title);
+    final priceTextController =
+        TextEditingController(text: product.price.toString());
+    final descriptionTextController =
+        TextEditingController(text: product.description);
+    final imageTextController = TextEditingController(text: product.image);
+    final categoryTextController =
+        TextEditingController(text: product.category);
+
     return Scaffold(
       drawer: const HomeDrawer(),
       appBar: AppBar(
@@ -30,23 +35,23 @@ class NewProductPage extends StatelessWidget {
             child: Column(
               children: [
                 TextFormField(
-                  controller: _titleTextController,
+                  initialValue: product.title,
                   decoration: const InputDecoration(labelText: 'Title'),
                 ),
                 TextFormField(
-                  controller: _priceTextController,
+                  controller: priceTextController,
                   decoration: const InputDecoration(labelText: 'Price'),
                 ),
                 TextFormField(
-                  controller: _descriptionTextController,
+                  controller: descriptionTextController,
                   decoration: const InputDecoration(labelText: 'Description'),
                 ),
                 TextFormField(
-                  controller: _imageTextController,
+                  controller: imageTextController,
                   decoration: const InputDecoration(labelText: 'Image'),
                 ),
                 TextFormField(
-                  controller: _categoryTextController,
+                  controller: categoryTextController,
                   decoration: const InputDecoration(labelText: 'Category'),
                 ),
               ],
@@ -54,16 +59,17 @@ class NewProductPage extends StatelessWidget {
           ),
           TextButton(
             onPressed: () async {
-              final statusCode = await productController.addProduct(
-                  _titleTextController.text,
-                  _priceTextController.text,
-                  _descriptionTextController.text,
-                  _imageTextController.text,
-                  _categoryTextController.text);
+              final statusCode = await productController.updateProduct(
+                  product.id,
+                  titleTextController.text,
+                  priceTextController.text,
+                  descriptionTextController.text,
+                  imageTextController.text,
+                  categoryTextController.text);
 
               if (statusCode == 200) {
                 const snackBar = SnackBar(
-                  content: Text('Produto adicionado com sucesso!'),
+                  content: Text('Produto atualizado com sucesso!'),
                   duration: Duration(seconds: 2),
                 );
                 if (context.mounted) {
@@ -71,7 +77,7 @@ class NewProductPage extends StatelessWidget {
                 }
               }
             },
-            child: const Text('Adicionar'),
+            child: const Text('Editar'),
           ),
         ],
       ),

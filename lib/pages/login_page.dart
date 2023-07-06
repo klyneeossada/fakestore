@@ -1,6 +1,8 @@
 import 'package:fakestore/controller/user_controller.dart';
 import 'package:flutter/material.dart';
 
+import '../widgets/drawer.dart';
+
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -17,6 +19,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: const HomeDrawer(),
       appBar: AppBar(
         title: const Row(
           children: [

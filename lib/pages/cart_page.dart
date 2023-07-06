@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../get_it.dart';
 import '../models/product_model.dart';
+import '../widgets/drawer.dart';
 
 class CartPage extends StatefulWidget {
   const CartPage({super.key});
@@ -24,6 +25,7 @@ class _CartPageState extends State<CartPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: const HomeDrawer(),
       appBar: AppBar(
         title: Row(
           children: [
