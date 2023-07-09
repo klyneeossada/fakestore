@@ -1,8 +1,8 @@
 import 'package:fakestore/pages/cart_page.dart';
-import 'package:fakestore/pages/editproduct_page.dart';
+import 'package:fakestore/pages/edit_product_page.dart';
 import 'package:fakestore/pages/home_page.dart';
 import 'package:fakestore/pages/login_page.dart';
-import 'package:fakestore/pages/newproduct_page.dart';
+import 'package:fakestore/pages/new_product_page.dart';
 import 'package:fakestore/pages/product_detail_page.dart';
 import 'package:flutter/material.dart';
 
