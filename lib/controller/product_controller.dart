@@ -22,6 +22,8 @@ class ProductController extends Disposable {
   ValueNotifier<List<ProductModel>> products =
       ValueNotifier<List<ProductModel>>([]);
 
+  late ValueNotifier<ProductModel> product;
+
   getProducts() async {
     products.value = await repository.getProducts();
   }
@@ -80,5 +82,29 @@ class ProductController extends Disposable {
   @override
   FutureOr onDispose() {
     products.dispose();
+  }
+
+  getSingleProduct(String id) async {
+    final response = await _dio.get('https://fakestoreapi.com/products/$id');
+    final productData = (response.data as Map<String, dynamic>);
+    final productModel = ProductModel.fromJson(productData);
+    product = ValueNotifier<ProductModel>(productModel);
+  }
+
+  limitResultProduct(String number) async {
+    final response =
+        await _dio.get('https://fakestoreapi.com/products?limit=$number');
+    final limitedProducts = (response.data as List);
+    final result =
+        limitedProducts.map((e) => ProductModel.fromJson(e)).toList();
+    products.value = result;
+  }
+
+  sortResults(String results) async {
+    final response =
+        await _dio.get('https://fakestoreapi.com/products?sort=$results');
+    final sortedProducts = (response.data as List);
+    final result = sortedProducts.map((e) => ProductModel.fromJson(e)).toList();
+    products.value = result;
   }
 }

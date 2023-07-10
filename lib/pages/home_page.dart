@@ -1,12 +1,12 @@
 import 'package:badges/badges.dart' as badges;
 import 'package:fakestore/controller/cart_controller.dart';
-import 'package:fakestore/controller/home_controller.dart';
 import 'package:fakestore/controller/product_controller.dart';
 import 'package:flutter/material.dart';
 
 import '../get_it.dart';
-import '../models/product_model.dart';
-import '../widgets/drawer.dart';
+import '../widgets/drawer_widget.dart';
+import '../widgets/home_grid_view_builder_widget.dart';
+import '../widgets/single_grid_view_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -16,29 +16,40 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final controller = getIt<ProductController>();
+  final productController = getIt<ProductController>();
   final cartController = getIt<CartController>();
-  final homeController = HomeController();
   bool showAllProducts = true;
+  bool showLimitProducts = false;
+  bool isSortedAsc = true;
+
+  List<String> limitDropDownList = [
+    'Todos',
+    '1',
+    '2',
+    '3',
+    '4',
+    '5',
+  ];
+  List<String> sortDropDownList = [
+    'asc',
+    'desc',
+  ];
+  String limitDropDownValue = '';
+  String sortDropDownValue = '';
 
   @override
   void initState() {
     super.initState();
-    controller.getProducts();
+    productController.getProducts();
     showAllProducts = true;
+    showLimitProducts = false;
+    limitDropDownValue = limitDropDownList.first;
+    sortDropDownValue = sortDropDownList.first;
+    isSortedAsc = true;
   }
 
   @override
   Widget build(BuildContext context) {
-    List<String> dropDownList = [
-      'Todos',
-      '1',
-      '2',
-      '3',
-      '4',
-      '5',
-    ];
-    String dropDownValue = dropDownList.first;
     return Scaffold(
       drawer: const HomeDrawer(),
       appBar: AppBar(
@@ -86,144 +97,96 @@ class _HomePageState extends State<HomePage> {
                                 },
                               );
                             } else {
-                              await homeController.getSingleProduct(id);
+                              await productController.getSingleProduct(id);
                               setState(
                                 () {
                                   showAllProducts = false;
+                                  showLimitProducts = false;
                                 },
                               );
                             }
                           },
                         ),
                       ),
+                      const SizedBox(width: 10),
                       SizedBox(
                         width: 100,
                         child: DropdownButton(
-                          value: dropDownValue,
-                          onChanged: (String? value) {
-                            setState(
-                              () {
-                                dropDownValue = value!;
-                              },
-                            );
+                          value: limitDropDownValue,
+                          onChanged: (String? limitId) async {
+                            await productController
+                                .limitResultProduct(limitId!);
+                            if (limitId == 'Todos') {
+                              setState(
+                                () {
+                                  limitDropDownValue = limitId;
+                                  showAllProducts = true;
+                                },
+                              );
+                            } else {
+                              setState(
+                                () {
+                                  limitDropDownValue = limitId;
+                                  showAllProducts = false;
+                                  showLimitProducts = true;
+                                },
+                              );
+                            }
                           },
-                          items: dropDownList.map<DropdownMenuItem<String>>(
-                            (String value) {
+                          items:
+                              limitDropDownList.map<DropdownMenuItem<String>>(
+                            (String valueList) {
                               return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
+                                value: valueList,
+                                child: Text(valueList),
                               );
                             },
                           ).toList(),
                         ),
-                      )
+                      ),
+                      const SizedBox(width: 10),
+                      SizedBox(
+                        width: 100,
+                        child: DropdownButton(
+                          value: sortDropDownValue,
+                          onChanged: (String? sort) async {
+                            await productController.sortResults(sort!);
+                            if (sort == 'asc') {
+                              setState(
+                                () {
+                                  sortDropDownValue = sort;
+                                },
+                              );
+                            } else {
+                              setState(
+                                () {
+                                  sortDropDownValue = sort;
+                                },
+                              );
+                            }
+                          },
+                          items: sortDropDownList.map<DropdownMenuItem<String>>(
+                            (String valueList) {
+                              return DropdownMenuItem<String>(
+                                value: valueList,
+                                child: Text(valueList),
+                              );
+                            },
+                          ).toList(),
+                        ),
+                      ),
                     ],
                   ),
                 ),
               ),
             ],
           ),
-          showAllProducts
-              ? Expanded(
-                  child: ValueListenableBuilder<List<ProductModel>>(
-                    valueListenable: controller.products,
-                    builder: (_, products, __) {
-                      if (products.isEmpty) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      } else {
-                        return GridView.builder(
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                          ),
-                          itemCount: products.length,
-                          itemBuilder: (context, index) {
-                            final product = products[index];
-                            return Card(
-                              child: Column(
-                                children: [
-                                  Text(product.title),
-                                  Expanded(
-                                    child: InkWell(
-                                      onTap: () {
-                                        Navigator.pushNamed(
-                                            context, 'product-detail-page',
-                                            arguments: product);
-                                      },
-                                      child: Image.network(
-                                        product.image,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                  ),
-                                  IconButton(
-                                    onPressed: () {
-                                      setState(
-                                        () {
-                                          cartController.cartItems.value
-                                              .add(product);
-                                        },
-                                      );
-                                    },
-                                    icon: const Icon(Icons.add),
-                                  )
-                                ],
-                              ),
-                            );
-                          },
-                        );
-                      }
-                    },
-                  ),
-                )
-              : Expanded(
-                  child: ValueListenableBuilder<ProductModel>(
-                    valueListenable: homeController.product,
-                    builder: (_, product, __) {
-                      return GridView(
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 1,
-                        ),
-                        children: [
-                          Card(
-                            child: Column(
-                              children: [
-                                Text(product.title),
-                                Expanded(
-                                  child: InkWell(
-                                    onTap: () {
-                                      Navigator.pushNamed(
-                                          context, 'product-detail-page',
-                                          arguments: product);
-                                    },
-                                    child: Image.network(
-                                      product.image,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-                                IconButton(
-                                  onPressed: () {
-                                    setState(
-                                      () {
-                                        cartController.cartItems.value
-                                            .add(product);
-                                      },
-                                    );
-                                  },
-                                  icon: const Icon(Icons.add),
-                                )
-                              ],
-                            ),
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-                ),
+          if (showAllProducts)
+            const HomeGridViewWidget()
+          else if (showLimitProducts)
+            const HomeGridViewWidget()
+          else
+            const SingleGridViewWidget()
         ],
       ),
       floatingActionButton: FloatingActionButton(

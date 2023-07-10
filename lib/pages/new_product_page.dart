@@ -1,7 +1,7 @@
 import 'package:fakestore/controller/product_controller.dart';
 import 'package:flutter/material.dart';
 
-import '../widgets/drawer.dart';
+import '../widgets/drawer_widget.dart';
 
 class NewProductPage extends StatelessWidget {
   NewProductPage({super.key});
