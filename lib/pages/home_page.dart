@@ -4,6 +4,7 @@ import 'package:fakestore/controller/product_controller.dart';
 import 'package:flutter/material.dart';
 
 import '../get_it.dart';
+import '../models/product_model.dart';
 import '../widgets/drawer_widget.dart';
 import '../widgets/home_grid_view_builder_widget.dart';
 import '../widgets/single_grid_view_widget.dart';
@@ -57,17 +58,21 @@ class _HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const Text('FakeStore'),
-            badges.Badge(
-              stackFit: StackFit.loose,
-              badgeContent:
-                  Text(cartController.cartItems.value.length.toString()),
-              child: IconButton(
-                icon: const Icon(Icons.shopping_cart),
-                onPressed: () {
-                  Navigator.popAndPushNamed(context, '/cart-page');
-                },
-              ),
-            ),
+            ValueListenableBuilder<List<ProductModel>>(
+              valueListenable: cartController.cartItems,
+              builder: (_, value, __) {
+                return badges.Badge(
+                  stackFit: StackFit.loose,
+                  badgeContent: Text(value.length.toString()),
+                  child: IconButton(
+                    icon: const Icon(Icons.shopping_cart),
+                    onPressed: () {
+                      Navigator.popAndPushNamed(context, '/cart-page');
+                    },
+                  ),
+                );
+              },
+            )
           ],
         ),
       ),

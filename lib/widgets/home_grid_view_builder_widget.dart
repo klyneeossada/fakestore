@@ -9,13 +9,12 @@ class HomeGridViewWidget extends StatefulWidget {
   const HomeGridViewWidget({super.key});
 
   @override
-  State<HomeGridViewWidget> createState() => _HomeGridViewState();
+  State<HomeGridViewWidget> createState() => _HomeGridViewWidgetState();
 }
 
-class _HomeGridViewState extends State<HomeGridViewWidget> {
+class _HomeGridViewWidgetState extends State<HomeGridViewWidget> {
   final productController = getIt<ProductController>();
   final cartController = getIt<CartController>();
-
 
   @override
   Widget build(BuildContext context) {
