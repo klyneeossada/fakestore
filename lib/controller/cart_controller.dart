@@ -9,7 +9,10 @@ class CartController extends Disposable {
   ValueNotifier<List<ProductModel>> cartItems =
       ValueNotifier<List<ProductModel>>([]);
 
-  
+  addToCart(ProductModel product) {
+    cartItems.value.add(product);
+    cartItems.value = List.from(cartItems.value);
+  }
 
   @override
   FutureOr onDispose() {

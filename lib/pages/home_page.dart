@@ -37,6 +37,7 @@ class _HomePageState extends State<HomePage> {
   ];
   String limitDropDownValue = '';
   String sortDropDownValue = '';
+  String categoryDropDownValue = '';
 
   @override
   void initState() {
@@ -46,160 +47,161 @@ class _HomePageState extends State<HomePage> {
     showLimitProducts = false;
     limitDropDownValue = limitDropDownList.first;
     sortDropDownValue = sortDropDownList.first;
-    isSortedAsc = true;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      drawer: const HomeDrawer(),
-      appBar: AppBar(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text('FakeStore'),
-            ValueListenableBuilder<List<ProductModel>>(
-              valueListenable: cartController.cartItems,
-              builder: (_, value, __) {
-                return badges.Badge(
-                  stackFit: StackFit.loose,
-                  badgeContent: Text(value.length.toString()),
-                  child: IconButton(
-                    icon: const Icon(Icons.shopping_cart),
-                    onPressed: () {
-                      Navigator.popAndPushNamed(context, '/cart-page');
-                    },
-                  ),
-                );
-              },
-            )
-          ],
-        ),
-      ),
-      body: Column(
-        children: [
-          Row(
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(),
-                ),
-                height: 50,
-                width: 500,
-                child: SizedBox(
-                  child: Row(
-                    children: [
-                      const Text('Filtro'),
-                      const SizedBox(width: 5),
-                      SizedBox(
-                        width: 50,
-                        child: TextField(
-                          onSubmitted: (id) async {
-                            if (id.isEmpty || id == '0') {
-                              setState(
-                                () {
-                                  showAllProducts = true;
-                                },
-                              );
-                            } else {
-                              await productController.getSingleProduct(id);
-                              setState(
-                                () {
-                                  showAllProducts = false;
-                                  showLimitProducts = false;
-                                },
-                              );
-                            }
-                          },
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      SizedBox(
-                        width: 100,
-                        child: DropdownButton(
-                          value: limitDropDownValue,
-                          onChanged: (String? limitId) async {
-                            await productController
-                                .limitResultProduct(limitId!);
-                            if (limitId == 'Todos') {
-                              setState(
-                                () {
-                                  limitDropDownValue = limitId;
-                                  showAllProducts = true;
-                                },
-                              );
-                            } else {
-                              setState(
-                                () {
-                                  limitDropDownValue = limitId;
-                                  showAllProducts = false;
-                                  showLimitProducts = true;
-                                },
-                              );
-                            }
-                          },
-                          items:
-                              limitDropDownList.map<DropdownMenuItem<String>>(
-                            (String valueList) {
-                              return DropdownMenuItem<String>(
-                                value: valueList,
-                                child: Text(valueList),
-                              );
-                            },
-                          ).toList(),
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      SizedBox(
-                        width: 100,
-                        child: DropdownButton(
-                          value: sortDropDownValue,
-                          onChanged: (String? sort) async {
-                            await productController.sortResults(sort!);
-                            if (sort == 'asc') {
-                              setState(
-                                () {
-                                  sortDropDownValue = sort;
-                                },
-                              );
-                            } else {
-                              setState(
-                                () {
-                                  sortDropDownValue = sort;
-                                },
-                              );
-                            }
-                          },
-                          items: sortDropDownList.map<DropdownMenuItem<String>>(
-                            (String valueList) {
-                              return DropdownMenuItem<String>(
-                                value: valueList,
-                                child: Text(valueList),
-                              );
-                            },
-                          ).toList(),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+    return ValueListenableBuilder<List<ProductModel>>(
+        valueListenable: cartController.cartItems,
+        builder: (_, items, __) {
+          return Scaffold(
+            drawer: const HomeDrawer(),
+            appBar: AppBar(
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text('FakeStore'),
+                  badges.Badge(
+                    badgeContent:
+                        Text(cartController.cartItems.value.length.toString()),
+                    child: IconButton(
+                      icon: const Icon(Icons.shopping_cart),
+                      onPressed: () {
+                        Navigator.popAndPushNamed(context, '/cart-page');
+                      },
+                    ),
+                  )
+                ],
               ),
-            ],
-          ),
-          if (showAllProducts)
-            const HomeGridViewWidget()
-          else if (showLimitProducts)
-            const HomeGridViewWidget()
-          else
-            const SingleGridViewWidget()
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
-        onPressed: () {
-          Navigator.pushNamed(context, 'addproduct-page');
-        },
-      ),
-    );
+            ),
+            body: Column(
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(),
+                      ),
+                      height: 50,
+                      width: 500,
+                      child: SizedBox(
+                        child: Row(
+                          children: [
+                            const Text('Filtro'),
+                            const SizedBox(width: 5),
+                            SizedBox(
+                              width: 50,
+                              child: TextField(
+                                onSubmitted: (id) async {
+                                  if (id.isEmpty || id == '0') {
+                                    setState(
+                                      () {
+                                        showAllProducts = true;
+                                      },
+                                    );
+                                  } else {
+                                    await productController
+                                        .getSingleProduct(id);
+                                    setState(
+                                      () {
+                                        showAllProducts = false;
+                                        showLimitProducts = false;
+                                      },
+                                    );
+                                  }
+                                },
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            SizedBox(
+                              width: 100,
+                              child: DropdownButton(
+                                value: limitDropDownValue,
+                                onChanged: (String? limitId) async {
+                                  await productController
+                                      .limitResultProduct(limitId!);
+                                  if (limitId == 'Todos') {
+                                    setState(
+                                      () {
+                                        limitDropDownValue = limitId;
+                                        showAllProducts = true;
+                                      },
+                                    );
+                                  } else {
+                                    setState(
+                                      () {
+                                        limitDropDownValue = limitId;
+                                        showAllProducts = false;
+                                        showLimitProducts = true;
+                                      },
+                                    );
+                                  }
+                                },
+                                items: limitDropDownList
+                                    .map<DropdownMenuItem<String>>(
+                                  (String valueList) {
+                                    return DropdownMenuItem<String>(
+                                      value: valueList,
+                                      child: Text(valueList),
+                                    );
+                                  },
+                                ).toList(),
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            SizedBox(
+                              width: 100,
+                              child: DropdownButton(
+                                value: sortDropDownValue,
+                                onChanged: (String? sort) async {
+                                  await productController.sortResults(sort!);
+                                  if (sort == 'asc') {
+                                    setState(
+                                      () {
+                                        sortDropDownValue = sort;
+                                      },
+                                    );
+                                  } else {
+                                    setState(
+                                      () {
+                                        sortDropDownValue = sort;
+                                      },
+                                    );
+                                  }
+                                },
+                                items: sortDropDownList
+                                    .map<DropdownMenuItem<String>>(
+                                  (String valueList) {
+                                    return DropdownMenuItem<String>(
+                                      value: valueList,
+                                      child: Text(valueList),
+                                    );
+                                  },
+                                ).toList(),
+                              ),
+                            ),
+                            const SizedBox(width: 15),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                if (showAllProducts)
+                  const HomeGridViewWidget()
+                else if (showLimitProducts)
+                  const HomeGridViewWidget()
+                else
+                  const SingleGridViewWidget()
+              ],
+            ),
+            floatingActionButton: FloatingActionButton(
+              child: const Icon(Icons.add),
+              onPressed: () {
+                Navigator.pushNamed(context, 'addproduct-page');
+              },
+            ),
+          );
+        });
   }
 }

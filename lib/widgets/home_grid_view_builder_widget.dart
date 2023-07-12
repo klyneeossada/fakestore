@@ -17,17 +17,23 @@ class _HomeGridViewWidgetState extends State<HomeGridViewWidget> {
   final cartController = getIt<CartController>();
 
   @override
+  void initState() {
+    super.initState();
+    cartController.cartItems.value;
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: ValueListenableBuilder<List<ProductModel>>(
-        valueListenable: productController.products,
-        builder: (_, products, __) {
-          if (products.isEmpty) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          } else {
-            return GridView.builder(
+    return ValueListenableBuilder<List<ProductModel>>(
+      valueListenable: productController.products,
+      builder: (_, products, __) {
+        if (products.isEmpty) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        } else {
+          return Expanded(
+            child: GridView.builder(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
               ),
@@ -54,7 +60,7 @@ class _HomeGridViewWidgetState extends State<HomeGridViewWidget> {
                         onPressed: () {
                           setState(
                             () {
-                              cartController.cartItems.value.add(product);
+                              cartController.addToCart(product);
                             },
                           );
                         },
@@ -64,10 +70,10 @@ class _HomeGridViewWidgetState extends State<HomeGridViewWidget> {
                   ),
                 );
               },
-            );
-          }
-        },
-      ),
+            ),
+          );
+        }
+      },
     );
   }
 }
