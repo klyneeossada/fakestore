@@ -1,9 +1,13 @@
 class CategoryModel {
-  final String id;
+  final String id = '1';
   final String name;
 
   CategoryModel(
-    this.id,
     this.name,
   );
+
+  @override
+  String toString() {
+    return name;
+  }
 }

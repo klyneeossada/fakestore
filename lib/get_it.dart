@@ -1,3 +1,4 @@
+import 'package:fakestore/controller/category_controller.dart';
 import 'package:fakestore/repository/product_repository.dart';
 import 'package:get_it/get_it.dart';
 
@@ -14,4 +15,5 @@ void setup() {
         cartController: getIt<CartController>(),
         repository: getIt<ProductRepository>()),
   );
+  getIt.registerSingleton<CategoryController>(CategoryController());
 }

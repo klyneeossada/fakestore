@@ -1,10 +1,12 @@
 import 'package:badges/badges.dart' as badges;
 import 'package:fakestore/controller/cart_controller.dart';
+import 'package:fakestore/controller/category_controller.dart';
 import 'package:fakestore/controller/product_controller.dart';
 import 'package:flutter/material.dart';
 
 import '../get_it.dart';
 import '../models/product_model.dart';
+import '../widgets/category_dropdown_widget.dart';
 import '../widgets/drawer_widget.dart';
 import '../widgets/home_grid_view_builder_widget.dart';
 import '../widgets/single_grid_view_widget.dart';
@@ -19,6 +21,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final productController = getIt<ProductController>();
   final cartController = getIt<CartController>();
+  final categoryController = getIt<CategoryController>();
+
   bool showAllProducts = true;
   bool showLimitProducts = false;
   bool isSortedAsc = true;
@@ -37,12 +41,13 @@ class _HomePageState extends State<HomePage> {
   ];
   String limitDropDownValue = '';
   String sortDropDownValue = '';
-  String categoryDropDownValue = '';
+
 
   @override
   void initState() {
     super.initState();
     productController.getProducts();
+    categoryController.getCategory();
     showAllProducts = true;
     showLimitProducts = false;
     limitDropDownValue = limitDropDownList.first;
@@ -181,6 +186,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ),
                             const SizedBox(width: 15),
+                            const CategoryDropDown(),
                           ],
                         ),
                       ),
