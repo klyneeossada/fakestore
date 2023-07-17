@@ -42,16 +42,15 @@ class _HomePageState extends State<HomePage> {
   String limitDropDownValue = '';
   String sortDropDownValue = '';
 
-
   @override
   void initState() {
     super.initState();
     productController.getProducts();
-    categoryController.getCategory();
     showAllProducts = true;
     showLimitProducts = false;
     limitDropDownValue = limitDropDownList.first;
     sortDropDownValue = sortDropDownList.first;
+    categoryController.categories.value;
   }
 
   @override

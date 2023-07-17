@@ -1,5 +1,7 @@
+import 'dart:math';
+
 class CategoryModel {
-  final String id = '1';
+  final int id = Random().nextInt(50);
   final String name;
 
   CategoryModel(

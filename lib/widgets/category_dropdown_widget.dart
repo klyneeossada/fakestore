@@ -1,6 +1,9 @@
+import 'dart:js_interop';
+
 import 'package:flutter/material.dart';
 
 import '../controller/category_controller.dart';
+import '../controller/product_controller.dart';
 import '../get_it.dart';
 import '../models/category_model.dart';
 
@@ -13,6 +16,7 @@ class CategoryDropDown extends StatefulWidget {
 
 class _CategoryDropDownState extends State<CategoryDropDown> {
   final categoryController = getIt<CategoryController>();
+  final productController = getIt<ProductController>();
   CategoryModel? selectedCategory;
 
   @override
@@ -32,8 +36,13 @@ class _CategoryDropDownState extends State<CategoryDropDown> {
         return SizedBox(
           width: 150,
           child: DropdownButton(
-            value: selectedCategory,
+            value: selectedCategory.isNull ? categories[0] : selectedCategory,
             onChanged: (CategoryModel? category) {
+              if (category == categories[0]) {
+                productController.getProducts();
+              } else {
+                categoryController.sortCategories(category!);
+              }
               setState(() {
                 selectedCategory = category;
               });
@@ -42,7 +51,7 @@ class _CategoryDropDownState extends State<CategoryDropDown> {
               (element) {
                 return DropdownMenuItem(
                   value: element,
-                  child: Text(element.toString()),
+                  child: Text(element.name),
                 );
               },
             ).toList(),

@@ -22,15 +22,11 @@ class ProductController extends Disposable {
   ValueNotifier<List<ProductModel>> products =
       ValueNotifier<List<ProductModel>>([]);
 
-
-
   late ValueNotifier<ProductModel> product;
 
   getProducts() async {
     products.value = await repository.getProducts();
   }
-
-
 
   Future<int?> addProduct(String title, String price, String description,
       String image, String category) async {
@@ -111,6 +107,4 @@ class ProductController extends Disposable {
     final result = sortedProducts.map((e) => ProductModel.fromJson(e)).toList();
     products.value = result;
   }
-
-
 }
