@@ -4,6 +4,7 @@ import 'package:fakestore/pages/home_page.dart';
 import 'package:fakestore/pages/login_page.dart';
 import 'package:fakestore/pages/new_product_page.dart';
 import 'package:fakestore/pages/product_detail_page.dart';
+import 'package:fakestore/pages/purchases_page.dart';
 import 'package:flutter/material.dart';
 
 class MyApp extends StatelessWidget {
@@ -19,7 +20,8 @@ class MyApp extends StatelessWidget {
         'login-page': (context) => const LoginPage(),
         'addproduct-page': (context) => NewProductPage(),
         'product-detail-page': (context) => const ProductDetailPage(),
-        'edit-product-page': (context) => const EditProductPage()
+        'edit-product-page': (context) => const EditProductPage(),
+        'purchases-page': (context) => const PurchasesPage()
       },
     );
   }

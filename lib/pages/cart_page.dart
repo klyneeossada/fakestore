@@ -28,14 +28,15 @@ class _CartPageState extends State<CartPage> {
       drawer: const HomeDrawer(),
       appBar: AppBar(
         title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
+            const Text('Carrinho'),
             IconButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/');
+                Navigator.pushNamed(context, 'purchases-page');
               },
-              icon: const Icon(Icons.arrow_back),
+              icon: const Icon(Icons.wallet),
             ),
-            const Text('Carrinho'),
           ],
         ),
       ),

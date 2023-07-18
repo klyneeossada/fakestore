@@ -16,4 +16,5 @@ void setup() {
         repository: getIt<ProductRepository>()),
   );
   getIt.registerSingleton<CategoryController>(CategoryController());
+  
 }
