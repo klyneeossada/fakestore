@@ -11,12 +11,29 @@ class PurchasesPage extends StatefulWidget {
 }
 
 final purchaseController = getIt<CartController>();
+bool showAllPurchase = true;
+List<String> limitDropDownList = [
+  'Todos',
+  '1',
+  '2',
+  '3',
+  '4',
+  '5',
+];
+List<String> sortDropDownList = [
+  'asc',
+  'desc',
+];
+String limitDropDownValue = '';
+String sortDropDownValue = '';
 
 class _PurchasesPageState extends State<PurchasesPage> {
   @override
   void initState() {
     super.initState();
     purchaseController.getPurchases();
+    limitDropDownValue = limitDropDownList.first;
+    sortDropDownValue = sortDropDownList.first;
   }
 
   @override
@@ -26,21 +43,139 @@ class _PurchasesPageState extends State<PurchasesPage> {
       appBar: AppBar(
         title: const Text('Histórico de Compras'),
       ),
-      body: ValueListenableBuilder(
-        valueListenable: purchaseController.purchases,
-        builder: (_, purchases, __) {
-          return ListView.builder(
-            itemCount: purchaseController.purchases.value.length,
-            itemBuilder: (context, index) {
-              final cartProducts = purchases[index];
-              return Card(
-                child: Row(
-                  children: [Text(cartProducts.toString())],
+      body: Column(
+        children: [
+          Row(
+            children: [
+              const Text('Filtro'),
+              const SizedBox(width: 5),
+              SizedBox(
+                width: 50,
+                child: TextField(
+                  onSubmitted: (id) async {
+                    if (id.isEmpty || id == '0') {
+                      setState(
+                        () {
+                          showAllPurchase = true;
+                        },
+                      );
+                    } else {
+                      await purchaseController.getSinglePurchase(id);
+                      setState(
+                        () {
+                          showAllPurchase = false;
+                        },
+                      );
+                    }
+                  },
                 ),
-              );
+              ),
+              const SizedBox(width: 10),
+              SizedBox(
+                width: 100,
+                child: DropdownButton(
+                  value: limitDropDownValue,
+                  onChanged: (String? limitId) async {
+                    await purchaseController.limitResultPurchase(limitId!);
+                    if (limitId == 'Todos') {
+                      setState(
+                        () {
+                          limitDropDownValue = limitId;
+                          showAllPurchase = true;
+                        },
+                      );
+                    } else {
+                      setState(
+                        () {
+                          limitDropDownValue = limitId;
+                        },
+                      );
+                    }
+                  },
+                  items: limitDropDownList.map<DropdownMenuItem<String>>(
+                    (String valueList) {
+                      return DropdownMenuItem<String>(
+                        value: valueList,
+                        child: Text(valueList),
+                      );
+                    },
+                  ).toList(),
+                ),
+              ),
+              const SizedBox(width: 10),
+              SizedBox(
+                width: 100,
+                child: DropdownButton(
+                  value: sortDropDownValue,
+                  onChanged: (String? sort) async {
+                    await purchaseController.sortResults(sort!);
+                    if (sort == 'asc') {
+                      setState(
+                        () {
+                          sortDropDownValue = sort;
+                        },
+                      );
+                    } else {
+                      setState(
+                        () {
+                          sortDropDownValue = sort;
+                        },
+                      );
+                    }
+                  },
+                  items: sortDropDownList.map<DropdownMenuItem<String>>(
+                    (String valueList) {
+                      return DropdownMenuItem<String>(
+                        value: valueList,
+                        child: Text(valueList),
+                      );
+                    },
+                  ).toList(),
+                ),
+              ),
+            ],
+          ),
+          ValueListenableBuilder(
+            valueListenable: purchaseController.purchases,
+            builder: (_, purchases, __) {
+              return showAllPurchase
+                  ? SizedBox(
+                      height: 500,
+                      child: ListView.builder(
+                        itemCount: purchaseController.purchases.value.length,
+                        itemBuilder: (context, index) {
+                          final cartProducts = purchases[index];
+                          return Card(
+                            elevation: 3,
+                            child: ExpansionTile(
+                              title: Text(
+                                  'ID: ${cartProducts.id} - Usuário: ${cartProducts.userID.toString()} - Data: ${cartProducts.date.toString()}'),
+                              children: [
+                                Text(cartProducts.products.toString()),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    )
+                  : ValueListenableBuilder(
+                      valueListenable: purchaseController.purchase,
+                      builder: (_, purchase, __) {
+                        return Card(
+                          elevation: 3,
+                          child: ExpansionTile(
+                            title: Text(
+                                'ID: ${purchase.id} - Usuário: ${purchase.userID.toString()} - Data: ${purchase.date.toString()}'),
+                            children: [
+                              Text(purchase.products.toString()),
+                            ],
+                          ),
+                        );
+                      },
+                    );
             },
-          );
-        },
+          ),
+        ],
       ),
     );
   }

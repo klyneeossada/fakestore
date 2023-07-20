@@ -46,8 +46,6 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     productController.getProducts();
-    showAllProducts = true;
-    showLimitProducts = false;
     limitDropDownValue = limitDropDownList.first;
     sortDropDownValue = sortDropDownList.first;
     categoryController.categories.value;

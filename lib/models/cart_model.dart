@@ -1,6 +1,6 @@
 class CartModel {
   int id;
-  List<dynamic> products;
+  List products;
   String date;
   int userID;
 
