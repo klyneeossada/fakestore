@@ -2,6 +2,7 @@ import 'package:fakestore/controller/cart_controller.dart';
 import 'package:fakestore/get_it.dart';
 import 'package:fakestore/widgets/drawer_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class PurchasesPage extends StatefulWidget {
   const PurchasesPage({super.key});
@@ -12,6 +13,10 @@ class PurchasesPage extends StatefulWidget {
 
 final purchaseController = getIt<CartController>();
 bool showAllPurchase = true;
+
+TextEditingController initialDate = TextEditingController();
+TextEditingController finalDate = TextEditingController();
+
 List<String> limitDropDownList = [
   'Todos',
   '1',
@@ -34,6 +39,8 @@ class _PurchasesPageState extends State<PurchasesPage> {
     purchaseController.getPurchases();
     limitDropDownValue = limitDropDownList.first;
     sortDropDownValue = sortDropDownList.first;
+    initialDate.text = '';
+    finalDate.text = '';
   }
 
   @override
@@ -145,11 +152,13 @@ class _PurchasesPageState extends State<PurchasesPage> {
                         itemCount: purchaseController.purchases.value.length,
                         itemBuilder: (context, index) {
                           final cartProducts = purchases[index];
+                          DateTime date = DateTime.parse(cartProducts.date);
+                          DateFormat formattedDate = DateFormat('dd/MM/yyyy');
                           return Card(
                             elevation: 3,
                             child: ExpansionTile(
                               title: Text(
-                                  'ID: ${cartProducts.id} - Usuário: ${cartProducts.userID.toString()} - Data: ${cartProducts.date.toString()}'),
+                                  'ID: ${cartProducts.id} - Usuário: ${cartProducts.userID.toString()} - Data: ${formattedDate.format(date)}'),
                               children: [
                                 Text(cartProducts.products.toString()),
                               ],
@@ -174,6 +183,77 @@ class _PurchasesPageState extends State<PurchasesPage> {
                       },
                     );
             },
+          ),
+          SizedBox(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Flexible(
+                  child: TextField(
+                    controller: initialDate,
+                    decoration: const InputDecoration(
+                        icon: Icon(Icons.calendar_today),
+                        labelText: 'Data Inicial'),
+                    readOnly: true,
+                    onTap: () async {
+                      DateTime? pickedInitialDate = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime(2020, 1, 1),
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime(2100),
+                      );
+                      if (pickedInitialDate != null) {
+                        String formattedDate =
+                            DateFormat('yyyy-MM-dd').format(pickedInitialDate);
+                        setState(
+                          () {
+                            initialDate.text = formattedDate;
+                          },
+                        );
+                      }
+                    },
+                  ),
+                ),
+                Flexible(
+                  child: TextField(
+                    controller: finalDate,
+                    decoration: const InputDecoration(
+                        icon: Icon(Icons.calendar_today),
+                        labelText: 'Data Final'),
+                    readOnly: true,
+                    onTap: () async {
+                      DateTime? pickedFinalDate = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime(2020, 1, 30),
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime(2100),
+                      );
+                      if (pickedFinalDate != null) {
+                        String formattedDate =
+                            DateFormat('yyyy-MM-dd').format(pickedFinalDate);
+                        setState(
+                          () {
+                            finalDate.text = formattedDate;
+                          },
+                        );
+                      }
+                    },
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    purchaseController.getDateRange(
+                        startDate: initialDate.text, endDate: finalDate.text);
+                    setState(
+                      () {
+                        purchaseController.purchases;
+                      },
+                    );
+                  },
+                  child: const Text('Filtrar'),
+                )
+              ],
+            ),
           ),
         ],
       ),

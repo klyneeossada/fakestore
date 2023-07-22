@@ -48,11 +48,19 @@ class CartController extends Disposable {
     purchases.value = result;
   }
 
-    sortResults(String results) async {
+  sortResults(String results) async {
     final response =
         await _dio.get('https://fakestoreapi.com/carts?sort=$results');
     final sortedProducts = (response.data as List);
     final result = sortedProducts.map((e) => CartModel.fromJson(e)).toList();
+    purchases.value = result;
+  }
+
+  getDateRange({required String startDate, required String endDate}) async {
+    final response = await _dio.get(
+        'https://fakestoreapi.com/carts?startdate=$startDate&enddate=$endDate');
+    final datedProducts = (response.data as List);
+    final result = datedProducts.map((e) => CartModel.fromJson(e)).toList();
     purchases.value = result;
   }
 }
